@@ -3,12 +3,22 @@
  */
 import React from 'react';
 import { Layout, Row, Col } from 'antd';
+import SafeEval from 'safe-eval';
 import CodeEditor from '../../components/CodeEditor';
 import Button from '../../components/Button';
-
 const { Header, Content } = Layout;
 
 export default function LayoutPage() {
+  const [code, setCode] = React.useState('');
+  const [val, setVal] = React.useState('');
+  const evaluateCode = () => {
+    try {
+      const output = SafeEval(code);
+      if (typeof output === 'function') setVal(output.apply());
+    } catch (error) {
+      // console.log(error);
+    }
+  };
   return (
     <div>
       <Header
@@ -37,13 +47,13 @@ export default function LayoutPage() {
         <Row>
           <Col span={10}>
             <Row style={{ border: 'solid 2px #2b2b2b' }}>
-              <Col span={18} />
+              <Col span={18}>{val}</Col>
               <Col span={6}>
-                <Button>Apply Changes</Button>
+                <Button onClick={evaluateCode}>Apply Changes</Button>
               </Col>
             </Row>
             <Row style={{ border: 'solid 2px #2b2b2b' }}>
-              <CodeEditor />
+              <CodeEditor setCode={setCode} />
             </Row>
           </Col>
           <Col style={{ border: 'solid 2px #2b2b2b' }} span={14}>

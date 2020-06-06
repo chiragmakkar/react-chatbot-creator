@@ -9,14 +9,16 @@ class CodeEditor extends React.Component {
     };
   }
 
-  editorDidMount(editor) {
-    console.log('editorDidMount', editor);
+  editorDidMount(editor, monaco) {
+    // console.log('editorDidMount', editor);
     editor.focus();
   }
 
-  onChange(newValue, e) {
-    console.log('onChange', newValue, e);
-  }
+  onChange = (newValue, e) => {
+    // console.log('onChange', newValue, e);
+    this.props.setCode(newValue);
+    this.setState({ code: newValue }, () => console.log(this.state.code));
+  };
 
   render() {
     const { code } = this.state;
