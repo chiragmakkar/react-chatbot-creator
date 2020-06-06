@@ -4,6 +4,8 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const MONACO_DIR = path.resolve('../../node_modules/monaco-editor');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = options => ({
   mode: options.mode,
@@ -39,6 +41,11 @@ module.exports = options => ({
         // Preprocess 3rd party .css files located in node_modules
         test: /\.css$/,
         include: /node_modules/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.css$/,
+        include: MONACO_DIR,
         use: ['style-loader', 'css-loader'],
       },
       {
@@ -113,6 +120,9 @@ module.exports = options => ({
     // drop any unreachable code.
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
+    }),
+    new MonacoWebpackPlugin({
+      languages: ['javascript'],
     }),
   ]),
   resolve: {
