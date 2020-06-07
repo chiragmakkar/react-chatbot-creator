@@ -6,6 +6,7 @@ import { Layout, Row, Col } from 'antd';
 import SafeEval from 'safe-eval';
 import CodeEditor from '../../components/CodeEditor';
 import Button from '../../components/Button';
+import ChatScreen from '../../components/ChatScreen';
 const { Header, Content } = Layout;
 
 export default function LayoutPage() {
@@ -57,7 +58,7 @@ export default function LayoutPage() {
             </Row>
           </Col>
           <Col style={{ border: 'solid 2px #2b2b2b' }} span={14}>
-            Chatbot
+            <ChatScreen />
           </Col>
         </Row>
       </Content>
