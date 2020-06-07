@@ -26,17 +26,33 @@ class CodeEditor extends React.Component {
       selectOnLineNumbers: true,
     };
     return (
-      <div>
-        Code Editor
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          // padding: '10%',
+          fontFamily: 'Quicksand',
+          fontSize: '14px',
+          fontWeight: 'normal',
+          fontStretch: 'normal',
+          fontStyle: 'normal',
+          lineHeight: 'normal',
+          letterSpacing: 'normal',
+          color: '#d3d3d3',
+        }}
+      >
         <MonacoEditor
-          width="700"
-          height="600"
+          // width="700"
+          height="800"
           language="javascript"
           theme="vs-dark"
           value={code}
           options={options}
           onChange={this.onChange}
           editorDidMount={this.editorDidMount}
+          ref={editor =>
+            (this.editor = editor) && (window.onresize = this.editor.layout)
+          }
         />
       </div>
     );

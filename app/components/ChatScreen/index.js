@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col } from 'antd';
+import uuid from 'uuid/dist/v4';
 import UserImg from './user.jpg';
 import BotImg from './bot.jpg';
 
@@ -8,49 +8,40 @@ class ChatScreen extends React.Component {
     super();
     this.state = {
       messages: [
-        {
-          sender: 'user',
-          value: 'hey there bot',
-          id: '1',
-        },
-        {
-          sender: 'bot',
-          value: 'ok',
-          id: '2',
-        },
-        {
-          sender: 'user',
-          value: 'how are you?',
-          id: '3',
-        },
-        {
-          sender: 'bot',
-          value: 'ok',
-          id: '4',
-        },
-        {
-          sender: 'user',
-          value: 'hey there bot',
-          id: '5',
-        },
-        {
-          sender: 'bot',
-          value: 'ok',
-          id: '6',
-        },
-        {
-          sender: 'user',
-          value: 'how are you?',
-          id: '7',
-        },
-        {
-          sender: 'bot',
-          value: 'ok',
-          id: '8',
-        },
+        // {
+        //   sender: 'user',
+        //   value: 'hey there bot',
+        //   id: '1',
+        // },
+        // {
+        //   sender: 'bot',
+        //   value: 'ok',
+        //   id: '2',
+        // },
       ],
     };
   }
+
+  setCurrentMessage = (e, value) => {
+    this.setState({ currentMessage: e ? e.target.value : value });
+  };
+
+  handleEnter = e => {
+    console.log('GOT VALUE - ', e.target.value);
+    this.setCurrentMessage(null, '');
+    this.setState({
+      messages: [
+        ...this.state.messages,
+        { sender: 'user', value: e.target.value, id: uuid() },
+      ],
+    });
+  };
+
+  handleBotResponse = value => {
+    this.setState({
+      messages: [...this.state.messages, { sender: 'bot', value, id: uuid() }],
+    });
+  };
 
   render() {
     return (
@@ -199,6 +190,9 @@ class ChatScreen extends React.Component {
               outline: 'none',
             }}
             placeholder="Type message here.."
+            value={this.state.currentMessage}
+            onChange={this.setCurrentMessage}
+            onKeyUp={e => (e.key === 'Enter' ? this.handleEnter(e) : {})}
           />
         </div>
       </div>

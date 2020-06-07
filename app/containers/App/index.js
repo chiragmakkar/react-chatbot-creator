@@ -23,6 +23,7 @@ import LayoutPage from '../LayoutPage';
 
 const AppWrapper = styled.div`
   max-width: 100vw;
+  height: 100%;
   // margin: 0 auto;
   display: flex;
   min-height: 100%;
