@@ -34,8 +34,8 @@ export default function App() {
   return (
     <AppWrapper>
       <Helmet
-        titleTemplate="%s - React.js Boilerplate"
-        defaultTitle="React.js Boilerplate"
+        titleTemplate="%s | Chatbot Creator"
+        defaultTitle="Chatbot Creator"
       >
         <meta name="description" content="A React.js Boilerplate application" />
       </Helmet>
