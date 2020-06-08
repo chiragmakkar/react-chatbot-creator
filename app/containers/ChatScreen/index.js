@@ -21,6 +21,7 @@ class ChatScreen extends React.Component {
       ],
       isTyping: false,
       currentMessage: '',
+      code: '',
     };
   }
 
@@ -68,47 +69,98 @@ class ChatScreen extends React.Component {
     return (
       <div
         style={{
-          width: '100%',
-          height: '100%',
-          padding: '10%',
-          fontFamily: 'Quicksand',
-          fontSize: '14px',
-          fontWeight: 'normal',
-          fontStretch: 'normal',
-          fontStyle: 'normal',
-          lineHeight: 'normal',
-          letterSpacing: 'normal',
-          color: '#d3d3d3',
+          border: 'solid 2px #2b2b2b',
+          // borderRight: 'solid 2px #2b2b2b',
+          // borderTop: 'solid 2px #2b2b2b',
+          display: 'inline-block',
+          width: '60%',
         }}
       >
         <div
           style={{
-            backgroundColor: '#1f1f1f',
-            height: '70%',
-            padding: '5%',
-            overflowY: 'scroll',
+            width: '100%',
+            height: '100%',
+            padding: '10%',
+            fontFamily: 'Quicksand',
+            fontSize: '14px',
+            fontWeight: 'normal',
+            fontStretch: 'normal',
+            fontStyle: 'normal',
+            lineHeight: 'normal',
+            letterSpacing: 'normal',
+            color: '#d3d3d3',
           }}
         >
-          {this.state.messages.map(message => {
-            if (message.sender === 'user') {
+          <div
+            style={{
+              backgroundColor: '#1f1f1f',
+              height: '70%',
+              padding: '5%',
+              overflowY: 'scroll',
+            }}
+          >
+            {this.state.messages.map(message => {
+              if (message.sender === 'user') {
+                return (
+                  <div
+                    style={{
+                      display: 'inline-block',
+                      width: '100%',
+                      marginTop: '2%',
+                    }}
+                    key={message.id}
+                  >
+                    <div
+                      style={{
+                        width: '5%',
+                        display: 'inline-block',
+                        float: 'left',
+                      }}
+                    >
+                      <img
+                        src={UserImg}
+                        style={{
+                          height: '30px',
+                          width: '30px',
+                          borderRadius: '50%',
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        minWidth: '30%',
+                        minHeight: '15%',
+                        backgroundColor: '#404040',
+                        borderRadius: '16px',
+                        padding: '2%',
+                        width: '30%',
+                        display: 'block',
+                        float: 'left',
+                        marginLeft: '2%',
+                      }}
+                    >
+                      <div>{message.value}</div>
+                    </div>
+                  </div>
+                );
+              }
               return (
                 <div
+                  key={message.id}
                   style={{
                     display: 'inline-block',
                     width: '100%',
-                    marginTop: '2%',
                   }}
-                  key={message.id}
                 >
                   <div
                     style={{
                       width: '5%',
                       display: 'inline-block',
-                      float: 'left',
+                      float: 'right',
                     }}
                   >
                     <img
-                      src={UserImg}
+                      src={BotImg}
                       style={{
                         height: '30px',
                         width: '30px',
@@ -118,6 +170,7 @@ class ChatScreen extends React.Component {
                   </div>
                   <div
                     style={{
+                      // marginTop: '2%',
                       minWidth: '30%',
                       minHeight: '15%',
                       backgroundColor: '#404040',
@@ -125,18 +178,18 @@ class ChatScreen extends React.Component {
                       padding: '2%',
                       width: '30%',
                       display: 'block',
-                      float: 'left',
-                      marginLeft: '2%',
+                      float: 'right',
+                      marginRight: '2%',
                     }}
                   >
                     <div>{message.value}</div>
                   </div>
                 </div>
               );
-            }
-            return (
+            })}
+            {this.state.isTyping ? (
               <div
-                key={message.id}
+                key="isTypingMessage"
                 style={{
                   display: 'inline-block',
                   width: '100%',
@@ -172,98 +225,56 @@ class ChatScreen extends React.Component {
                     marginRight: '2%',
                   }}
                 >
-                  <div>{message.value}</div>
+                  {/* <div>Typing...</div> */}
+                  <div className="is-typing">
+                    <div className="jump1" />
+                    <div className="jump2" />
+                    <div className="jump3" />
+                  </div>
                 </div>
               </div>
-            );
-          })}
-          {this.state.isTyping ? (
-            <div
-              key="isTypingMessage"
-              style={{
-                display: 'inline-block',
-                width: '100%',
-              }}
-            >
-              <div
-                style={{
-                  width: '5%',
-                  display: 'inline-block',
-                  float: 'right',
-                }}
-              >
-                <img
-                  src={BotImg}
-                  style={{
-                    height: '30px',
-                    width: '30px',
-                    borderRadius: '50%',
-                  }}
-                />
-              </div>
-              <div
-                style={{
-                  // marginTop: '2%',
-                  minWidth: '30%',
-                  minHeight: '15%',
-                  backgroundColor: '#404040',
-                  borderRadius: '16px',
-                  padding: '2%',
-                  width: '30%',
-                  display: 'block',
-                  float: 'right',
-                  marginRight: '2%',
-                }}
-              >
-                {/* <div>Typing...</div> */}
-                <div className="is-typing">
-                  <div className="jump1" />
-                  <div className="jump2" />
-                  <div className="jump3" />
-                </div>
-              </div>
-            </div>
-          ) : (
-            ''
-          )}
-        </div>
-        <div
-          style={{
-            backgroundColor: '#1f1f1f',
-            height: '12.5%',
-            marginTop: '5%',
-            width: '100%',
-            // position: 'absolute',
-            // top: '62%',
-            // left: 0,
-            // right: 0,
-            // margin: 'auto',
-            marginTop: '5%',
-            background: '#1f1f1f',
-            borderRadius: '8px',
-            paddingRight: 0,
-            boxShadow: '0 0 20px 5px rgba(0,0,0,.2)',
-            maxWidth: '800px',
-          }}
-        >
-          <input
-            type="text"
+            ) : (
+              ''
+            )}
+          </div>
+          <div
             style={{
-              border: 0,
-              background: 'none',
-              color: '#cdcdcd',
+              backgroundColor: '#1f1f1f',
+              height: '12.5%',
+              marginTop: '5%',
               width: '100%',
-              height: '100%',
-              padding: '3%',
-              resize: 'none',
+              // position: 'absolute',
+              // top: '62%',
+              // left: 0,
+              // right: 0,
+              // margin: 'auto',
+              marginTop: '5%',
+              background: '#1f1f1f',
               borderRadius: '8px',
-              outline: 'none',
+              paddingRight: 0,
+              boxShadow: '0 0 20px 5px rgba(0,0,0,.2)',
+              maxWidth: '800px',
             }}
-            placeholder="Type message here.."
-            value={this.state.currentMessage}
-            onChange={this.setCurrentMessage}
-            onKeyUp={e => (e.key === 'Enter' ? this.handleEnter(e) : {})}
-          />
+          >
+            <input
+              type="text"
+              style={{
+                border: 0,
+                background: 'none',
+                color: '#cdcdcd',
+                width: '100%',
+                height: '100%',
+                padding: '3%',
+                resize: 'none',
+                borderRadius: '8px',
+                outline: 'none',
+              }}
+              placeholder="Type message here.."
+              value={this.state.currentMessage}
+              onChange={this.setCurrentMessage}
+              onKeyUp={e => (e.key === 'Enter' ? this.handleEnter(e) : {})}
+            />
+          </div>
         </div>
       </div>
     );
