@@ -14,13 +14,13 @@ export default class LayoutPage extends React.Component {
       tabs: [
         {
           name: 'index.js',
-          code: '// This is index.js',
+          code: `/* This is index.js \n* Please don't modify or add any other functions other than the respond function. \n*/`,
           deletable: false,
           selected: true,
         },
         {
           name: 'test.js',
-          code: '// This is test.js',
+          code: '/* This is test.js \n* \n*/',
           deletable: true,
           selected: false,
         },
@@ -61,7 +61,7 @@ export default class LayoutPage extends React.Component {
           }),
           {
             name: `${name}.js`,
-            code: `// This is ${name}.js`,
+            code: `/* This is ${name}.js \n* \n*/`,
             deletable: true,
             selected: true,
           },
