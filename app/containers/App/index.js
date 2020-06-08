@@ -17,7 +17,7 @@ import { Switch, Route } from 'react-router-dom';
 // import Header from 'components/Header';
 // import Footer from 'components/Footer';
 
-// import GlobalStyle from '../../global-styles';
+import GlobalStyle from '../../global-styles';
 import 'antd/dist/antd.css';
 import LayoutPage from '../LayoutPage';
 
@@ -48,7 +48,7 @@ export default function App() {
         <Route path="" component={NotFoundPage} /> */}
       </Switch>
       {/* <Footer /> */}
-      {/* <GlobalStyle /> */}
+      <GlobalStyle />
     </AppWrapper>
   );
 }

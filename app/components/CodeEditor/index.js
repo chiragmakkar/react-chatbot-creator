@@ -61,6 +61,7 @@ class CodeEditor extends React.Component {
             scrollbar: false,
             overviewRulerBorder: false,
             overviewRulerLanes: 0,
+            fontSize: '14',
           }}
           onChange={this.onChange}
           editorDidMount={this.editorDidMount}

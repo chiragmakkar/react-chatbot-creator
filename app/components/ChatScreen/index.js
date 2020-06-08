@@ -19,6 +19,8 @@ class ChatScreen extends React.Component {
         //   id: '2',
         // },
       ],
+      isTyping: false,
+      currentMessage: '',
     };
   }
 
@@ -26,15 +28,34 @@ class ChatScreen extends React.Component {
     this.setState({ currentMessage: e ? e.target.value : value });
   };
 
-  handleEnter = e => {
-    console.log('GOT VALUE - ', e.target.value);
+  setStateSynchronous = async state => {
+    return new Promise((resolve, reject) => {
+      this.setState(state, () => resolve());
+    });
+  };
+
+  handleEnter = async e => {
+    const value = e.target.value;
     this.setCurrentMessage(null, '');
-    this.setState({
+    await this.setStateSynchronous({
       messages: [
         ...this.state.messages,
         { sender: 'user', value: e.target.value, id: uuid() },
       ],
     });
+    await this.setStateSynchronous({ isTyping: true });
+    try {
+      const response = await this.props.getResponse(value);
+      this.setState({
+        isTyping: false,
+        messages: [
+          ...this.state.messages,
+          { sender: 'bot', value: response, id: uuid() },
+        ],
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   handleBotResponse = value => {
@@ -156,6 +177,55 @@ class ChatScreen extends React.Component {
               </div>
             );
           })}
+          {this.state.isTyping ? (
+            <div
+              key="isTypingMessage"
+              style={{
+                display: 'inline-block',
+                width: '100%',
+              }}
+            >
+              <div
+                style={{
+                  width: '5%',
+                  display: 'inline-block',
+                  float: 'right',
+                }}
+              >
+                <img
+                  src={BotImg}
+                  style={{
+                    height: '30px',
+                    width: '30px',
+                    borderRadius: '50%',
+                  }}
+                />
+              </div>
+              <div
+                style={{
+                  // marginTop: '2%',
+                  minWidth: '30%',
+                  minHeight: '15%',
+                  backgroundColor: '#404040',
+                  borderRadius: '16px',
+                  padding: '2%',
+                  width: '30%',
+                  display: 'block',
+                  float: 'right',
+                  marginRight: '2%',
+                }}
+              >
+                {/* <div>Typing...</div> */}
+                <div className="is-typing">
+                  <div className="jump1" />
+                  <div className="jump2" />
+                  <div className="jump3" />
+                </div>
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
         </div>
         <div
           style={{
