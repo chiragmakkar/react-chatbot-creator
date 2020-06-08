@@ -46,8 +46,22 @@ class CodeEditor extends React.Component {
           height="800"
           language="javascript"
           theme="vs-dark"
-          value={code}
-          options={options}
+          value={this.props.code}
+          options={{
+            selectOnLineNumbers: true,
+            parameterHints: true,
+            autoIndent: true,
+            automaticLayout: true,
+            autoClosingBrackets: true,
+            autoClosingQuotes: true,
+            codeLens: true,
+            find: true,
+            minimap: { enabled: false },
+            cursorBlinking: true,
+            scrollbar: false,
+            overviewRulerBorder: false,
+            overviewRulerLanes: 0,
+          }}
           onChange={this.onChange}
           editorDidMount={this.editorDidMount}
           ref={editor =>
