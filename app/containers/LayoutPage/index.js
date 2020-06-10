@@ -20,7 +20,7 @@ export default class LayoutPage extends React.Component {
   evaluateCode = input =>
     new Promise(async (resolve, reject) => {
       try {
-        const output = SafeEval(this.state.code);
+        const output = SafeEval(this.state.code, window);
         await sleep(1500);
         if (typeof output === 'function') {
           const result = output.call(output, input);

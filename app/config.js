@@ -1,0 +1,2 @@
+export const GOOGLE_TRANSLATE_API_KEY =
+  process.env.REACT_APP_GOOGLE_API || 'AIzaSyAtCC6GAc4aCYzQ-KWN7zrB7PEV6SQYh5c';

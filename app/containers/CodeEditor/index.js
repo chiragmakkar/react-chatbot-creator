@@ -9,7 +9,8 @@ class CodeEditor extends React.Component {
         {
           name: 'index.js',
           code: `/* This is index.js \n* Please don't modify/add any functions apart from respond function. \n*/ \nasync function respond(input) {
-    return "ok"
+    const translatedText = await Campk12.translate(input, "spanish")
+    return translatedText
 }`,
           deletable: false,
           selected: true,
