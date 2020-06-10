@@ -29,14 +29,13 @@ class ChatScreen extends React.Component {
     this.setState({ currentMessage: e ? e.target.value : value });
   };
 
-  setStateSynchronous = async state => {
-    return new Promise((resolve, reject) => {
+  setStateSynchronous = async state =>
+    new Promise((resolve, reject) => {
       this.setState(state, () => resolve());
     });
-  };
 
   handleEnter = async e => {
-    const value = e.target.value;
+    const { value } = e.target;
     this.setCurrentMessage(null, '');
     await this.setStateSynchronous({
       messages: [
@@ -44,16 +43,20 @@ class ChatScreen extends React.Component {
         { sender: 'user', value: e.target.value, id: uuid() },
       ],
     });
+    this.chatDiv.scrollTop = this.chatDiv.scrollHeight;
     await this.setStateSynchronous({ isTyping: true });
     try {
       const response = await this.props.getResponse(value);
-      this.setState({
-        isTyping: false,
-        messages: [
-          ...this.state.messages,
-          { sender: 'bot', value: response, id: uuid() },
-        ],
-      });
+      this.setState(
+        {
+          isTyping: false,
+          messages: [
+            ...this.state.messages,
+            { sender: 'bot', value: response, id: uuid() },
+          ],
+        },
+        () => (this.chatDiv.scrollTop = this.chatDiv.scrollHeight),
+      );
     } catch (error) {
       console.log(error);
     }
@@ -98,6 +101,7 @@ class ChatScreen extends React.Component {
               padding: '5%',
               overflowY: 'scroll',
             }}
+            ref={chatDiv => (this.chatDiv = chatDiv)}
           >
             {this.state.messages.map(message => {
               if (message.sender === 'user') {

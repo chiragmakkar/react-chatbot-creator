@@ -5,7 +5,6 @@ class CodeEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: '// type your code...',
       tabs: [
         {
           name: 'index.js',
@@ -29,18 +28,24 @@ class CodeEditor extends React.Component {
     editor.focus();
   }
 
+  componentDidMount() {
+    this.props.setCode(this.state.tabs[0].code);
+  }
+
   onChange = (newValue, e) => {
-    this.props.setCode(newValue);
-    this.setState({ code: newValue });
+    this.setCode(newValue);
   };
 
   setCode = code => {
-    this.setState({
-      tabs: this.state.tabs.map(tab => {
-        if (tab.selected) tab.code = code;
-        return tab;
-      }),
-    });
+    this.setState(
+      {
+        tabs: this.state.tabs.map(tab => {
+          if (tab.selected) tab.code = code;
+          return tab;
+        }),
+      },
+      () => this.props.setCode(this.state.tabs[0].code),
+    );
   };
 
   setTab = (e, tabName) => {
@@ -208,6 +213,10 @@ class CodeEditor extends React.Component {
                 overviewRulerBorder: false,
                 overviewRulerLanes: 0,
                 fontSize: '14',
+                scrollBeyondLastColumn: 2,
+                scrollBeyondLastLine: false,
+                quickSuggestions: true,
+                quickSuggestionsDelay: 10,
               }}
               onChange={this.onChange}
               editorDidMount={this.editorDidMount}
