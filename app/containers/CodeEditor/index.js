@@ -154,7 +154,7 @@ class CodeEditor extends React.Component {
               }}
               onClick={this.addTab}
             >
-              +
+              <strong>+</strong>
             </div>
           </div>
           <div style={{ display: 'inline-block', width: '25%' }}>
