@@ -30,8 +30,12 @@ class CodeEditor extends React.Component {
   }
 
   componentDidMount() {
-    this.props.setCode(this.state.tabs[0].code);
+    this.saveCode();
   }
+
+  saveCode = () => {
+    this.props.setCode(this.state.tabs[0].code);
+  };
 
   onChange = (newValue, e) => {
     this.setCode(newValue);
@@ -45,7 +49,7 @@ class CodeEditor extends React.Component {
           return tab;
         }),
       },
-      () => this.props.setCode(this.state.tabs[0].code),
+      // () => this.props.setCode(this.state.tabs[0].code),
     );
   };
 
@@ -165,7 +169,7 @@ class CodeEditor extends React.Component {
                 fontSize: '12px',
                 color: 'darkslategrey',
               }}
-              onClick={this.evaluateCode}
+              onClick={this.saveCode}
             >
               Apply Changes
             </button>
