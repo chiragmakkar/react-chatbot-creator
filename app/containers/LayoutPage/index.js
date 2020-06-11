@@ -17,10 +17,10 @@ export default class LayoutPage extends React.Component {
     this.setState({ code });
   };
 
-  evaluateCode = input =>
+  evaluateCode = (input, code = this.state.code) =>
     new Promise(async (resolve, reject) => {
       try {
-        const output = SafeEval(this.state.code, window);
+        const output = SafeEval(code, window);
         await sleep(1500);
         if (typeof output === 'function') {
           const result = output.call(output, input);
@@ -46,7 +46,7 @@ export default class LayoutPage extends React.Component {
             display: 'flex',
           }}
         >
-          <CodeEditor setCode={this.setCode} />
+          <CodeEditor setCode={this.setCode} testResponse={this.evaluateCode} />
           <ChatScreen getResponse={this.evaluateCode} />
         </div>
       </div>

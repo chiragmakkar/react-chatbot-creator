@@ -1,5 +1,6 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
+import { debounce } from 'lodash';
 
 class CodeEditor extends React.Component {
   constructor(props) {
@@ -22,7 +23,9 @@ class CodeEditor extends React.Component {
           selected: false,
         },
       ],
+      isValidCode: false,
     };
+    this.validateCode = debounce(this.validateCode, 500);
   }
 
   editorDidMount(editor, monaco) {
@@ -35,10 +38,25 @@ class CodeEditor extends React.Component {
 
   saveCode = () => {
     this.props.setCode(this.state.tabs[0].code);
+    this.setState({ isValidCode: false });
   };
 
-  onChange = (newValue, e) => {
+  validateCode = async code => {
+    try {
+      const response = await this.props.testResponse('hi', code);
+      console.log(response);
+      if (typeof response === 'string' && response)
+        this.setState({ isValidCode: true });
+      else this.setState({ isValidCode: false });
+    } catch (error) {
+      this.setState({ isValidCode: false });
+      console.log(error);
+    }
+  };
+
+  onChangeHandler = async (newValue, e) => {
     this.setCode(newValue);
+    await this.validateCode(newValue);
   };
 
   setCode = code => {
@@ -93,6 +111,7 @@ class CodeEditor extends React.Component {
 
   render() {
     const { code } = this.state.tabs.find(tab => tab.selected);
+    const { isValidCode } = this.state;
     return (
       <div style={{ display: 'inline-block', width: '40%' }}>
         <div
@@ -140,10 +159,11 @@ class CodeEditor extends React.Component {
                 <span onClick={e => this.setTab(e, tab.name)}>{tab.name}</span>
                 {tab.deletable ? (
                   <span
-                    style={{ marginLeft: '15%' }}
-                    onClick={e => this.removeTab(e, tab.name)}
+                    onClick={e =>
+                      this.removeTab(e, tab.name) && e.stopPropagation()
+                    }
                   >
-                    &times;
+                    &nbsp;&nbsp;&times;
                   </span>
                 ) : (
                   ''
@@ -164,12 +184,13 @@ class CodeEditor extends React.Component {
           <div style={{ display: 'inline-block', width: '25%' }}>
             <button
               style={{
-                backgroundColor: '#66d68d',
+                backgroundColor: isValidCode ? '#66d68d' : 'lightGrey',
                 borderRadius: '4px',
                 fontSize: '12px',
-                color: 'darkslategrey',
+                color: isValidCode ? 'darkslategrey' : 'black',
               }}
               onClick={this.saveCode}
+              disabled={!isValidCode}
             >
               Apply Changes
             </button>
@@ -223,7 +244,7 @@ class CodeEditor extends React.Component {
                 quickSuggestions: true,
                 quickSuggestionsDelay: 10,
               }}
-              onChange={this.onChange}
+              onChange={this.onChangeHandler}
               editorDidMount={this.editorDidMount}
               ref={editor =>
                 (this.editor = editor) && (window.onresize = this.editor.layout)
