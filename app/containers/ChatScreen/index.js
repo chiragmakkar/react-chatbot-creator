@@ -132,12 +132,12 @@ class ChatScreen extends React.Component {
                     </div>
                     <div
                       style={{
-                        minWidth: '30%',
+                        // minWidth: '30%',
                         minHeight: '15%',
                         backgroundColor: '#404040',
                         borderRadius: '16px',
                         padding: '2%',
-                        width: '30%',
+                        // width: '30%',
                         display: 'block',
                         float: 'left',
                         marginLeft: '2%',
@@ -175,12 +175,12 @@ class ChatScreen extends React.Component {
                   <div
                     style={{
                       // marginTop: '2%',
-                      minWidth: '30%',
+                      // minWidth: '30%',
                       minHeight: '15%',
                       backgroundColor: '#404040',
                       borderRadius: '16px',
                       padding: '2%',
-                      width: '30%',
+                      // width: '30%',
                       display: 'block',
                       float: 'right',
                       marginRight: '2%',
@@ -218,12 +218,12 @@ class ChatScreen extends React.Component {
                 <div
                   style={{
                     // marginTop: '2%',
-                    minWidth: '30%',
+                    minWidth: '10%',
                     minHeight: '15%',
                     backgroundColor: '#404040',
                     borderRadius: '16px',
-                    padding: '2%',
-                    width: '30%',
+                    padding: '1% 2% 3% 2%',
+                    width: '10%',
                     display: 'block',
                     float: 'right',
                     marginRight: '2%',

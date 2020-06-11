@@ -29,7 +29,7 @@ const GlobalStyle = createGlobalStyle`
   }
   .is-typing {
     // margin-top: 100px;
-    width: 20%;
+    // width: 20%;
     justify-content: space-around;
     display: flex;
     padding-bottom: 10%;
