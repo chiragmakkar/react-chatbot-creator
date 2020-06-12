@@ -11,6 +11,17 @@ import {
   updateValidity,
 } from './action';
 import safeEval from '../../utils/safeEval';
+import {
+  CodeEditorWrapper,
+  TabPaneWrapper,
+  TabListWrapper,
+  TabWrapper,
+  AddTabWrapper,
+  SaveButtonWrapper,
+  CodePaneWrapper,
+  MonacoWrapper,
+} from './style';
+import { SaveButton } from '../../components/Buttons';
 
 class CodeEditor extends React.Component {
   constructor(props) {
@@ -34,6 +45,26 @@ class CodeEditor extends React.Component {
         },
       ],
       isValidCode: false,
+    };
+    this.monacoOptions = {
+      selectOnLineNumbers: true,
+      parameterHints: true,
+      autoIndent: true,
+      automaticLayout: true,
+      autoClosingBrackets: true,
+      autoClosingQuotes: true,
+      codeLens: true,
+      find: true,
+      minimap: { enabled: false },
+      cursorBlinking: true,
+      scrollbar: false,
+      overviewRulerBorder: false,
+      overviewRulerLanes: 0,
+      fontSize: '14',
+      scrollBeyondLastColumn: 2,
+      scrollBeyondLastLine: false,
+      quickSuggestions: true,
+      quickSuggestionsDelay: 10,
     };
     this.onChangeHandler = debounce(this.onChangeHandler, 1500);
   }
@@ -95,49 +126,11 @@ class CodeEditor extends React.Component {
   render() {
     const { isValidCode, currentCode } = this.props;
     return (
-      <div style={{ display: 'inline-block', width: '40%' }}>
-        <div
-          style={{
-            // borderRight: 'solid 2px #2b2b2b',
-            borderTop: 'solid 2px #2b2b2b',
-            display: 'inline-block',
-            width: '100%',
-            height: '5%',
-            padding: '1% 1% 0% 1%',
-          }}
-        >
-          <div
-            style={{
-              display: 'inline-block',
-              width: '75%',
-              height: '100%',
-            }}
-          >
+      <CodeEditorWrapper>
+        <TabPaneWrapper>
+          <TabListWrapper>
             {this.props.tabs.map(tab => (
-              <div
-                style={{
-                  fontFamily: 'Quicksand',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  fontStretch: 'normal',
-                  fontStyle: 'normal',
-                  lineHeight: 'normal',
-                  letterSpacing: 'normal',
-                  color: '#c6c6c6',
-                  marginLeft: !tab.deletable ? '3%' : undefined,
-                  borderLeft: !tab.deletable ? 'solid 2px #2b2b2b' : undefined,
-                  borderTop: 'solid 2px #2b2b2b',
-                  borderRight: 'solid 2px #2b2b2b',
-                  minWidth: '13%',
-                  padding: '1.5% 1% 1% 1%',
-                  borderTopLeftRadius: '4px',
-                  borderTopRightRadius: '4px',
-                  height: '100%',
-                  backgroundColor: tab.selected ? '#1f1f1f' : '#171717',
-                  display: 'inline-block',
-                }}
-                // onClick={e => this.setTab(e, tab.name)}
-              >
+              <TabWrapper selected={tab.selected} deletable={tab.deletable}>
                 <span onClick={e => this.setTab(e, tab.name)}>{tab.name}</span>
                 {tab.deletable ? (
                   <span
@@ -150,91 +143,36 @@ class CodeEditor extends React.Component {
                 ) : (
                   ''
                 )}
-              </div>
+              </TabWrapper>
             ))}
-            <div
-              style={{
-                width: '2%',
-                display: 'inline-block',
-                marginLeft: '2%',
-              }}
-              onClick={this.addTab}
-            >
+            <AddTabWrapper onClick={this.addTab}>
               <strong>+</strong>
-            </div>
-          </div>
-          <div style={{ display: 'inline-block', width: '25%' }}>
-            <button
-              style={{
-                backgroundColor: isValidCode ? '#66d68d' : 'lightGrey',
-                borderRadius: '4px',
-                fontSize: '12px',
-                color: isValidCode ? 'darkslategrey' : 'black',
-              }}
-              onClick={this.saveCode}
-              disabled={!isValidCode}
-            >
+            </AddTabWrapper>
+          </TabListWrapper>
+          <SaveButtonWrapper>
+            <SaveButton onClick={this.saveCode} disabled={!isValidCode}>
               Apply Changes
-            </button>
-          </div>
-        </div>
-        <div
-          style={{
-            // border: 'solid 2px #2b2b2b',
-            display: 'inline-block',
-            width: '100%',
-          }}
-        >
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              // padding: '10%',
-              fontFamily: 'Quicksand',
-              fontSize: '14px',
-              fontWeight: 'normal',
-              fontStretch: 'normal',
-              fontStyle: 'normal',
-              lineHeight: 'normal',
-              letterSpacing: 'normal',
-              color: '#d3d3d3',
-            }}
-          >
+            </SaveButton>
+          </SaveButtonWrapper>
+        </TabPaneWrapper>
+        <CodePaneWrapper>
+          <MonacoWrapper>
             <MonacoEditor
               // width="700"
               height="700"
               language="javascript"
               theme="vs-dark"
               value={currentCode}
-              options={{
-                selectOnLineNumbers: true,
-                parameterHints: true,
-                autoIndent: true,
-                automaticLayout: true,
-                autoClosingBrackets: true,
-                autoClosingQuotes: true,
-                codeLens: true,
-                find: true,
-                minimap: { enabled: false },
-                cursorBlinking: true,
-                scrollbar: false,
-                overviewRulerBorder: false,
-                overviewRulerLanes: 0,
-                fontSize: '14',
-                scrollBeyondLastColumn: 2,
-                scrollBeyondLastLine: false,
-                quickSuggestions: true,
-                quickSuggestionsDelay: 10,
-              }}
+              options={this.monacoOptions}
               onChange={this.onChangeHandler}
               editorDidMount={this.editorDidMount}
               ref={editor =>
                 (this.editor = editor) && (window.onresize = this.editor.layout)
               }
             />
-          </div>
-        </div>
-      </div>
+          </MonacoWrapper>
+        </CodePaneWrapper>
+      </CodeEditorWrapper>
     );
   }
 }
