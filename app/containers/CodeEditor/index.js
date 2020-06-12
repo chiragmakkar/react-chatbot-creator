@@ -1,6 +1,16 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { debounce } from 'lodash';
+import { connect } from 'react-redux';
+import {
+  addTab,
+  deleteTab,
+  selectTab,
+  updateCode,
+  saveCode,
+  updateValidity,
+} from './action';
+import safeEval from '../../utils/safeEval';
 
 class CodeEditor extends React.Component {
   constructor(props) {
@@ -25,7 +35,7 @@ class CodeEditor extends React.Component {
       ],
       isValidCode: false,
     };
-    this.validateCode = debounce(this.validateCode, 500);
+    this.onChangeHandler = debounce(this.onChangeHandler, 1500);
   }
 
   editorDidMount(editor, monaco) {
@@ -37,81 +47,53 @@ class CodeEditor extends React.Component {
   }
 
   saveCode = () => {
-    this.props.setCode(this.state.tabs[0].code);
-    this.setState({ isValidCode: false });
+    if (this.props.currentCode) this.props.saveCode();
+    this.props.updateValidity(false);
   };
 
   validateCode = async code => {
     try {
-      const response = await this.props.testResponse('hi', code);
-      console.log(response);
+      const response = await safeEval('hi', code);
       if (typeof response === 'string' && response)
-        this.setState({ isValidCode: true });
-      else this.setState({ isValidCode: false });
+        this.props.updateValidity(true);
+      else this.props.updateValidity(false);
     } catch (error) {
-      this.setState({ isValidCode: false });
+      this.props.updateValidity(false);
       console.log(error);
     }
   };
 
-  onChangeHandler = async (newValue, e) => {
-    this.setCode(newValue);
-    await this.validateCode(newValue);
+  onChangeHandler = (newValue, e) => {
+    this.props.updateCode(newValue);
+    this.validateCode(newValue);
   };
 
   setCode = code => {
-    this.setState(
-      {
-        tabs: this.state.tabs.map(tab => {
-          if (tab.selected) tab.code = code;
-          return tab;
-        }),
-      },
-      // () => this.props.setCode(this.state.tabs[0].code),
-    );
+    this.props.updateCode(code);
   };
 
   setTab = (e, tabName) => {
-    this.setState({
-      tabs: this.state.tabs.map(tab => {
-        if (tab.name === tabName) tab.selected = true;
-        else tab.selected = false;
-        return tab;
-      }),
-    });
+    this.props.selectTab(tabName);
+    this.validateCode(newValue);
   };
 
   addTab = e => {
     const name = prompt('Please enter file name.');
     if (name)
-      this.setState({
-        tabs: [
-          ...this.state.tabs.map(tab => {
-            if (tab.selected) tab.selected = false;
-            return tab;
-          }),
-          {
-            name: `${name}.js`,
-            code: `/* This is ${name}.js \n* \n*/`,
-            deletable: true,
-            selected: true,
-          },
-        ],
+      this.props.addTab({
+        name: `${name}.js`,
+        code: `/* This is ${name}.js \n* \n*/`,
+        deletable: true,
+        selected: true,
       });
   };
 
   removeTab = (e, name) => {
-    let tabs = JSON.parse(JSON.stringify(this.state.tabs));
-    tabs = tabs.filter(tab => tab.name !== name);
-    tabs[0].selected = true;
-    this.setState({
-      tabs,
-    });
+    this.props.deleteTab(name);
   };
 
   render() {
-    const { code } = this.state.tabs.find(tab => tab.selected);
-    const { isValidCode } = this.state;
+    const { isValidCode, currentCode } = this.props;
     return (
       <div style={{ display: 'inline-block', width: '40%' }}>
         <div
@@ -131,7 +113,7 @@ class CodeEditor extends React.Component {
               height: '100%',
             }}
           >
-            {this.state.tabs.map(tab => (
+            {this.props.tabs.map(tab => (
               <div
                 style={{
                   fontFamily: 'Quicksand',
@@ -223,7 +205,7 @@ class CodeEditor extends React.Component {
               height="700"
               language="javascript"
               theme="vs-dark"
-              value={code}
+              value={currentCode}
               options={{
                 selectOnLineNumbers: true,
                 parameterHints: true,
@@ -257,4 +239,11 @@ class CodeEditor extends React.Component {
   }
 }
 
-export default CodeEditor;
+const mapStateToProps = ({ code }) => {
+  return code;
+};
+
+export default connect(
+  mapStateToProps,
+  { addTab, deleteTab, selectTab, updateCode, saveCode, updateValidity },
+)(CodeEditor);
