@@ -1,7 +1,11 @@
 import { createStore, combineReducers } from 'redux';
 import codeReducer from './containers/CodeEditor/reducer';
+import chatReducer from './containers/ChatScreen/reducer';
 
-const combinedReducer = combineReducers({ code: codeReducer });
+const combinedReducer = combineReducers({
+  code: codeReducer,
+  chat: chatReducer,
+});
 
 export default createStore(
   combinedReducer,

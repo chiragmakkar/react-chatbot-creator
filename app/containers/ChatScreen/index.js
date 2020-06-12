@@ -2,10 +2,13 @@ import React from 'react';
 import uuid from 'uuid/dist/v4';
 import UserImg from './user.jpg';
 import BotImg from './bot.jpg';
+import { connect } from 'react-redux';
+import { sendMessage, setMessage, setTypingStatus } from './action';
+import safeEval from '../../utils/safeEval';
 
 class ChatScreen extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       messages: [
         // {
@@ -25,8 +28,12 @@ class ChatScreen extends React.Component {
     };
   }
 
+  componentDidUpdate() {
+    this.chatDiv.scrollTop = this.chatDiv.scrollHeight;
+  }
+
   setCurrentMessage = (e, value) => {
-    this.setState({ currentMessage: e ? e.target.value : value });
+    this.props.setMessage(e ? e.target.value : value);
   };
 
   setStateSynchronous = async state =>
@@ -36,36 +43,25 @@ class ChatScreen extends React.Component {
 
   handleEnter = async e => {
     const { value } = e.target;
-    this.setCurrentMessage(null, '');
-    await this.setStateSynchronous({
-      messages: [
-        ...this.state.messages,
-        { sender: 'user', value: e.target.value, id: uuid() },
-      ],
+    const { code } = this.props;
+    this.props.sendMessage({
+      sender: 'user',
+      value: value,
+      id: uuid(),
     });
-    this.chatDiv.scrollTop = this.chatDiv.scrollHeight;
-    await this.setStateSynchronous({ isTyping: true });
+    this.props.setTypingStatus(true);
     try {
-      const response = await this.props.getResponse(value);
-      this.setState(
-        {
-          isTyping: false,
-          messages: [
-            ...this.state.messages,
-            { sender: 'bot', value: response, id: uuid() },
-          ],
-        },
-        () => (this.chatDiv.scrollTop = this.chatDiv.scrollHeight),
-      );
+      const response = await safeEval(value, code);
+      this.props.sendMessage({
+        sender: 'bot',
+        value: response,
+        id: uuid(),
+      });
+      this.props.setTypingStatus(false);
     } catch (error) {
+      this.props.setTypingStatus(false);
       console.log(error);
     }
-  };
-
-  handleBotResponse = value => {
-    this.setState({
-      messages: [...this.state.messages, { sender: 'bot', value, id: uuid() }],
-    });
   };
 
   render() {
@@ -103,7 +99,7 @@ class ChatScreen extends React.Component {
             }}
             ref={chatDiv => (this.chatDiv = chatDiv)}
           >
-            {this.state.messages.map(message => {
+            {this.props.messages.map(message => {
               if (message.sender === 'user') {
                 return (
                   <div
@@ -191,7 +187,7 @@ class ChatScreen extends React.Component {
                 </div>
               );
             })}
-            {this.state.isTyping ? (
+            {this.props.isTyping ? (
               <div
                 key="isTypingMessage"
                 style={{
@@ -274,7 +270,7 @@ class ChatScreen extends React.Component {
                 outline: 'none',
               }}
               placeholder="Type message here.."
-              value={this.state.currentMessage}
+              value={this.props.currentMessage}
               onChange={this.setCurrentMessage}
               onKeyUp={e => (e.key === 'Enter' ? this.handleEnter(e) : {})}
             />
@@ -285,4 +281,11 @@ class ChatScreen extends React.Component {
   }
 }
 
-export default ChatScreen;
+const mapStateToProps = ({ code, chat }) => {
+  return { ...chat, code: code.tabs.length ? code.tabs[0].code : '' };
+};
+
+export default connect(
+  mapStateToProps,
+  { sendMessage, setTypingStatus, setMessage },
+)(ChatScreen);

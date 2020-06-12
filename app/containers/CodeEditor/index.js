@@ -10,6 +10,7 @@ import {
   saveCode,
   updateValidity,
 } from './action';
+import safeEval from '../../utils/safeEval';
 
 class CodeEditor extends React.Component {
   constructor(props) {
@@ -52,7 +53,7 @@ class CodeEditor extends React.Component {
 
   validateCode = async code => {
     try {
-      const response = await this.props.testResponse('hi', code);
+      const response = await safeEval('hi', code);
       if (typeof response === 'string' && response)
         this.props.updateValidity(true);
       else this.props.updateValidity(false);
