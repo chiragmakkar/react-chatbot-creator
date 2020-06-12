@@ -8,9 +8,11 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { Provider } from 'react-redux';
 import styled from 'styled-components';
 import GlobalStyle from '../../global-styles';
 import LayoutPage from '../LayoutPage';
+import store from '../../store';
 
 const AppWrapper = styled.div`
   max-width: 100vw;
@@ -24,15 +26,20 @@ const AppWrapper = styled.div`
 
 export default function App() {
   return (
-    <AppWrapper>
-      <Helmet
-        titleTemplate="%s | Chatbot Creator"
-        defaultTitle="Chatbot Creator"
-      >
-        <meta name="description" content="A React.js Boilerplate application" />
-      </Helmet>
-      <LayoutPage />
-      <GlobalStyle />
-    </AppWrapper>
+    <Provider store={store}>
+      <AppWrapper>
+        <Helmet
+          titleTemplate="%s | Chatbot Creator"
+          defaultTitle="Chatbot Creator"
+        >
+          <meta
+            name="description"
+            content="A React.js Boilerplate application"
+          />
+        </Helmet>
+        <LayoutPage />
+        <GlobalStyle />
+      </AppWrapper>
+    </Provider>
   );
 }
