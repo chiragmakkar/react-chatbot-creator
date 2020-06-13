@@ -6,7 +6,7 @@ export const CodeEditorWrapper = styled.div`
 `;
 
 export const TabPaneWrapper = styled.div`
-  bordertop: solid 2px #2b2b2b;
+  border-top: solid 2px #2b2b2b;
   display: inline-block;
   width: 100%;
   height: 5%;
@@ -60,12 +60,12 @@ export const CodePaneWrapper = styled.div`
 export const MonacoWrapper = styled.div`
   width: 100%;
   height: 100%;
-  fontfamily: Quicksand;
-  fontsize: 14px;
-  fontweight: normal;
-  fontstretch: normal;
-  fontstyle: normal;
-  lineheight: normal;
-  letterspacing: normal;
+  font-family: Quicksand;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
   color: #d3d3d3;
 `;
